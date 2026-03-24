@@ -1,19 +1,17 @@
 #!/bin/bash
 DIR=$(pwd)
-
-# Install paket wajib
-pkg install zsh neofetch proot-distro -y
-
-# Setup Shortcut & Extra Keys
+pkg install zsh proot-distro -y
 mkdir -p ~/.termux
-cp $DIR/termux.properties ~/.termux/termux.properties
-termux-reload-settings
-
-# Setup .zshrc
+if [ -f "$DIR/termux.properties" ]; then
+    cp "$DIR/termux.properties" ~/.termux/termux.properties
+    termux-reload-settings
+fi
+rm -f $PREFIX/etc/motd
+touch $PREFIX/etc/motd
 rm -f ~/.zshrc
-echo "neofetch" > ~/.zshrc
-echo "source $DIR/mytheme.zsh-theme" >> ~/.zshrc
-
-# Ganti Shell
+echo "source $DIR/mytheme.zsh-theme" > ~/.zshrc
 chsh -s zsh
-echo "Selesai! Restart Termux lo."
+echo "-----------------------------------------------"
+echo " Style Termux selesai di perbarui silahkan:"
+echo " restart Termux atau ketik: zsh"
+echo "-----------------------------------------------"
