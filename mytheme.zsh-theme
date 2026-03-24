@@ -4,11 +4,14 @@ printf '\e[4 q'
 HISTSIZE=4096
 SAVEHIST=16384
 HISTFILE=~/.zsh_history
-setopt HIST_IGNORE_BOTH
+
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
 
 [[ -f ~/.draw ]] && . ~/.draw
 [[ -f ~/.username ]] && . ~/.username
-NAME=${NAME:-"u0_a66"} # Default name jika ~/.username kosong
+NAME=${NAME:-"u0_a66"}
 
 setopt PROMPT_SUBST
 PROMPT='
@@ -22,18 +25,18 @@ alias mv='mv -i'
 alias rm='rm -i'
 
 if whence exa >/dev/null; then
-    alias l='exa'
-    alias ls='exa'
-    alias la='exa -a'
-    alias ll='exa -Fhl'
+    alias l="exa"
+    alias ls="exa"
+    alias la="exa -a"
+    alias ll="exa -Fhl"
 else
-    alias l='ls --color=auto'
-    alias ls='ls --color=auto'
-    alias la='ls --color=auto -a'
-    alias ll='ls --color=auto -Fhl'
+    alias l="ls --color=auto"
+    alias ls="ls --color=auto"
+    alias la="ls --color=auto -a"
+    alias ll="ls --color=auto -Fhl"
 fi
 
-alias nethunter='proot-distro login nethunter'
+alias nethunter="proot-distro login nethunter"
 
 autoload -Uz up-line-or-beginning-search
 autoload -Uz down-line-or-beginning-search
