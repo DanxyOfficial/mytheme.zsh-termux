@@ -1,24 +1,45 @@
+# Aktifkan fitur eksekusi fungsi di prompt
+setopt PROMPT_SUBST
+
 function get_date() { echo "$(date +'%d %a %b')" }
 function get_time() { echo "$(date +'%l:%M %p')" }
 
-PROMPT=$'
-%{\e[0;34m%}%B┌─[%b%{\e[0m%}%{\e[1;32m%}%n%{\e[1;33m%}@%{\e[0m%}%{\e[0;36m%}termux%{\e[0;34m%}%B]%b%{\e[0m%}-%{\e[0;34m%}%B[%b%{\e[0;33m%}$(get_date)%{\e[0;34m%}%B]%b%{\e[0m%}-%{\e[0;34m%}%B[%b%{\e[1;33m%}$(get_time)%{\e[0;34m%}%B]%b%{\e[0m%}
-%{\e[0;34m%}%B├─%{\e[0;34m%}%B[%b%{\e[1;33m%}%(4~|/%2~|%~)%{\e[0;34m%}%B]%b%{\e[0m%}
-%{\e[0;34m%}%B└─%B[%{\e[1;35m%}$%{\e[0;34m%}%B]%{\e[0m%}%b '
+# Panggil widget history
+autoload -Uz up-line-or-beginning-search
+autoload -Uz down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
 
-export LS_COLORS='no=00:fi=00:di=01;34:ln=00;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=41;33;01:ex=00;32:*.tar=00;31:*.zip=00;31:*.jpg=01;35:*.png=01;35:*.mp3=00;32:'
-alias ls='ls --color=auto'
+# Prompt Multiline dengan warna standar Zsh (%F{warna})
+PROMPT='
+%F{blue}┌─[%f%F{green}%n%f%F{yellow}@%f%F{cyan}termux%f%F{blue}]%f-%F{blue}[%f%F{yellow}$(get_date)%f%F{blue}]%f-%F{blue}[%f%F{yellow}$(get_time)%f%F{blue}]%f
+%F{blue}├─[%f%F{yellow}%(4~|/%2~|%~)%f%F{blue}]%f
+%F{blue}└─[%f%F{magenta}$%f%F{blue}]%f '
 
-bindkey '^[[A' up-line-or-beginning-search
-bindkey '^[[B' down-line-or-beginning-search
+RPROMPT=''
 
-setopt CORRECT
-SPROMPT='Maksud lo %R? [y/n/e/a]: '
+# Alias
+alias l="ls --color=auto"
+alias ls="ls --color=auto"
+alias ll="ls -lh --color=auto"
+alias la="ls -a --color=auto"
+alias c="clear"
+alias ..="cd .."
 
+# Bindkey History
+bindkey "^[[A" up-line-or-beginning-search
+bindkey "^[[B" down-line-or-beginning-search
+
+# Matikan koreksi
+unsetopt CORRECT
+unsetopt CORRECT_ALL
+
+# Tab completion
 autoload -Uz compinit && compinit
-zstyle ':completion:*' menu select
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ":completion:*" menu select
+zstyle ":completion:*" matcher-list "m:{a-zA-Z}={A-Za-z}"
 
+# Warna pas ngetik (Mengeja)
 _check_cmd_color() {
     local cmd="${BUFFER%% *}"
     if [[ -z "$BUFFER" ]]; then
