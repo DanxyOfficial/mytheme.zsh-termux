@@ -1,44 +1,46 @@
-setopt PROMPT_SUBST
-autoload -Uz vcs_info
-zstyle ':vcs_info:*' check-for-changes true
-zstyle ':vcs_info:*' formats '%F{yellow}(%f%F{red}%b%f%F{yellow})%f'
-precmd() { vcs_info }
+clear
 
-function get_date() { echo "$(date +'%d %b')" }
-function get_time() { echo "$(date +'%H:%M:%S')" }
+printf '\e[4 q'
+HISTSIZE=4096
+SAVEHIST=16384
+HISTFILE=~/.zsh_history
+setopt HIST_IGNORE_BOTH
+
+[[ -f ~/.draw ]] && . ~/.draw
+[[ -f ~/.username ]] && . ~/.username
+NAME=${NAME:-"u0_a66"} # Default name jika ~/.username kosong
+
+setopt PROMPT_SUBST
+PROMPT='
+%F{red}┌─[%f%F{blue}${NAME}%f%F{yellow}@%f%F{cyan}termux%f%F{red}]─[%f%F{green}%~%f%F{red}]%f
+%F{red}└──╼ %f%F{red}❯%f%F{blue}❯%f%F{black}❯%f '
+
+alias grep='grep --color=auto'
+alias cp='cp -i'
+alias ln='ln -i'
+alias mv='mv -i'
+alias rm='rm -i'
+
+if whence exa >/dev/null; then
+    alias l='exa'
+    alias ls='exa'
+    alias la='exa -a'
+    alias ll='exa -Fhl'
+else
+    alias l='ls --color=auto'
+    alias ls='ls --color=auto'
+    alias la='ls --color=auto -a'
+    alias ll='ls --color=auto -Fhl'
+fi
+
+alias nethunter='proot-distro login nethunter'
 
 autoload -Uz up-line-or-beginning-search
 autoload -Uz down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
-
-PROMPT='
-%F{blue}┌─%f%F{cyan}[%f%F{white}%n%f%F{cyan}]%f%F{blue}─%f%F{cyan}[%f%F{green}$(get_date)%f%F{cyan}]%f%F{blue}─%f%F{cyan}[%f%F{yellow}$(get_time)%f%F{cyan}]%f
-%F{blue}├─%f%F{cyan}[%f%F{magenta}%(4~|/%2~|%~)%f%F{cyan}]%f ${vcs_info_msg_0_}
-%F{blue}└─%f%F{cyan}[%f%F{white}$%f%F{cyan}]%f '
-
-RPROMPT=''
-
-alias l='ls --color=auto'
-alias ll='ls -lha --color=auto'
-alias c='clear'
-alias ..='cd ..'
-alias gs='git status'
-alias gp='git pull'
-
-export LS_COLORS='di=01;34:ln=01;36:so=01;35:pi=33:ex=01;32:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=34;42'
-
-bindkey '^[[A' up-line-or-beginning-search
-bindkey '^[[B' down-line-or-beginning-search
-bindkey '^I' menu-complete
-
-unsetopt CORRECT
-unsetopt CORRECT_ALL
-
-autoload -Uz compinit && compinit
-zstyle ':completion:*' menu select
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+bindkey "^[[A" up-line-or-beginning-search
+bindkey "^[[B" down-line-or-beginning-search
 
 _check_cmd_color() {
     local cmd="${BUFFER%% *}"
