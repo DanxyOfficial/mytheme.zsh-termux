@@ -1,18 +1,17 @@
-control_syntax() {
-    local content=$1
-    local cmd="${content%% *}"
-    if whence "$cmd" >/dev/null; then
-        echo -n "%F{green}$content%f" 
+PROMPT='%F{cyan}[%n]%f %F{yellow}%~%f $ '
+
+bindkey '^[[A' up-line-or-beginning-search
+bindkey '^[[B' down-line-or-beginning-search
+
+zstyle ':completion:*' menu select
+_check_cmd_color() {
+    local cmd="${BUFFER%% *}"
+    if [[ -z "$BUFFER" ]]; then
+        REGION_HIGHLIGHT=()
+    elif whence "$cmd" >/dev/null; then
+        REGION_HIGHLIGHT=("0 ${#cmd} fg=green")
     else
-        echo -n "%F{red}$content%f"  
+        REGION_HIGHLIGHT=("0 ${#cmd} fg=red")
     fi
 }
-
-bindkey '^[[A' up-line-or-beginning-search 
-bindkey '^[[B' down-line-or-beginning-search 
-bindkey '^I' expand-or-complete 
-
-
-PROMPT='%F{yellow}[%~]%f %F{cyan}❯%f '
-
-setopt CORRECT
+zle -N zle-line-pre-redraw _check_cmd_color
